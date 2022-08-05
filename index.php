@@ -1,7 +1,7 @@
 <?php
 $errors = [];
 
-function expireDate($minute)
+function expireDate($minute) //add Minutes to the current time for the expire day
 {
   $now = new \DateTime('now');
   $start = $now->format('Y-m-d H:i');
@@ -21,7 +21,7 @@ function UrlAlreadyTaken($url)
   }
 }
 
-function printOutWarning()
+function printOutWarning() //print out all the warning at the adding section
 {
   global $errors;
   if (count($errors) > 0)
@@ -120,7 +120,7 @@ function getUrlSecret()
     ?>
     <button id="addSecretsVisibility" name="add">Add Secrets</button><br>
     <h2 class="add">Add Secret</h2><br>
-    <form method="post"> 
+    <form method="post"> <!-- Add option -->
       <label class="add">Secret: </label><br>
       <input type="text" class="add" id="addSecretText" name="secret"><a class="add">*required</a><br>
       <label class="add">Read number: </label><br>
@@ -144,28 +144,33 @@ function getUrlSecret()
     ?>
     <button id="readSecretsVisibility" name="read">Read Secrets</button><br>
     <h2 class="read">Read Secret</h2><br>
-    <form method="post">
+    <form method="post"><!-- Read option -->
       <label class="read">Read code: </label><br>
       <input type="text" class="read" id="readSecretText" name="readURL"><a class="add"></a><br>
       <button id="readSecret" class="read">Read</button>
       <?php
         $check = checkReadURL();
-        if ($check == 0)
+        if ($_SERVER["REQUEST_METHOD"] == "POST")
         {
-          echo "The secret is :".getUrlSecret()."<br>";
-          echo "Remaining read: ".getElementFromDatabase($_POST["readURL"],"limit");
-        }elseif($check == 1)
-        {
-          echo "<a class='warning'>This code is not exist!</a><br>";
-        }elseif($check == 2)
-        {
-          echo "<a class='warning'>Reading limit is out!</a><br>";
-        }elseif($check == 3)
-        {
-          echo "<a class='warning'>The secrets time has expired!</a><br>";
+          echo "<br>";
+          if ($check == 0)//Check if it have any error
+          {
+            echo "The secret is :".getUrlSecret()."<br>";
+            echo "Remaining read: ".getElementFromDatabase($_POST["readURL"],"limit");
+          }elseif($check == 1)//Non existing code
+          {
+            echo "<a class='warning'>This code is not exist!</a><br>";
+          }elseif($check == 2)//Limit reached
+          {
+            echo "<a class='warning'>Reading limit is reached!</a><br>";
+          }elseif($check == 3)//Time limit is expired
+          {
+            echo "<a class='warning'>The secrets time has expired!</a><br>";
+          }
         }
       ?>
     </form>
+</script>
     <script src="script.js"></script>
   </body>
 </html>

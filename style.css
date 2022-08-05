@@ -1,0 +1,12 @@
+.add {
+  display: none;
+}
+
+.read {
+  display: none;
+}
+
+.warning {
+  font-weight: bold;
+  color:red;
+}
